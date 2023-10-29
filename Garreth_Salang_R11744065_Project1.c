@@ -292,14 +292,7 @@ int lex()
   switch (charClass)
   {
     case LETTER:
-      addChar();
-      getChar();
-      while (charClass == LETTER || charClass == DIGIT)
-      {
-        addChar();
-        getChar();
-      }
-      nextToken = IDENT;
+      keyTerms();
       break;
 
     case DIGIT:
