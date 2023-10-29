@@ -352,7 +352,6 @@ void stmt()
     if (nextToken == LEFT_PAREN)
     {
         lex();
-        parse();
 
       if (nextToken == RIGHT_PAREN)
       {
