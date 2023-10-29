@@ -98,11 +98,11 @@ static int lookup(char ch)
         strcpy(tokenClass, "ASSIGN_OP");
         getChar();
         //lookup for '=='
-        if (nextChar == '=') 
+        if(strcmp(&nextChar, "=") == 0)
         {
-          addChar();
-          nextToken = EQUAL_OP;
-          strcpy(tokenClass, "EQUAL_OP");
+          addChar();  
+          nextToken = ASSIGN_OP;
+          strcpy(tokenClass, "ASSIGN_OP");
           getChar();
         }
         break;
@@ -113,7 +113,7 @@ static int lookup(char ch)
         strcpy(tokenClass, "LESSER_OP");
         getChar();
         //lookup for '<='
-        if (nextChar == '=') 
+        if(strcmp(&nextChar, "=") == 0)
         {
           addChar();
           nextToken = LEQUAL_OP;
@@ -128,12 +128,12 @@ static int lookup(char ch)
         strcpy(tokenClass, "GREATER_OP");
         getChar();
         //lookup for '>='
-        if (nextChar == '=') 
+        if(strcmp(&nextChar, "=") == 0)
         {
           addChar();
-          nextToken = GEQUAL_OP;
-          strcpy(tokenClass, "GEQUAL_OP");
-          getChar();
+            nextToken = GEQUAL_OP;
+            strcpy(tokenClass, "GEQUAL_OP");
+            getChar();
         }
         break;
       
@@ -165,12 +165,12 @@ static int lookup(char ch)
         strcpy(tokenClass, "ADD_OP");
         getChar();
         //lookup for '++'
-        if (nextChar == '+') 
+        if(strcmp(&nextChar, "+") == 0)
         {
           addChar();
-          nextToken = INC_OP;
-          strcpy(tokenClass, "INC_OP");
-          getChar();
+            nextToken = INC_OP;
+            strcpy(tokenClass, "INC_OP");
+            getChar();
         }
         break;
       
@@ -180,12 +180,12 @@ static int lookup(char ch)
         strcpy(tokenClass, "SUB_OP");
         getChar();
         //lookup for '--'
-        if (nextChar == '-') 
+        if(strcmp(&nextChar, "-") == 0)
         {
           addChar();
-          nextToken = DEC_OP;
-          strcpy(tokenClass, "DEC_OP");
-          getChar();
+            nextToken = DEC_OP;
+            strcpy(tokenClass, "DEC_OP");
+            getChar();
         }
         break;
       
@@ -335,26 +335,30 @@ static void keyTerms()
       getChar();
       i++;
   }
-  if(strncmp(lexeme, "read", 4) == 0&&strlen(lexeme)==4){ 
+  if(strncmp(lexeme, "read", 4) == 0&&strlen(lexeme)==4)
+  { 
     nextToken = KEY_READ;
-      strcpy(tokenClass, "KEY_READ");
+    strcpy(tokenClass, "KEY_READ");
   }
-  else if(strncmp(lexeme, "write",5) == 0&&strlen(lexeme)==5){
-      nextToken = KEY_WRITE;
-      strcpy(tokenClass, "KEY_WRITE");
+  else if(strncmp(lexeme, "write",5) == 0&&strlen(lexeme)==5)
+  {
+    nextToken = KEY_WRITE;
+    strcpy(tokenClass, "KEY_WRITE");
   }
-  else if(strncmp(lexeme, "while",5) == 0&&strlen(lexeme)==5){
-      nextToken = KEY_WHILE;
-      strcpy(tokenClass, "KEY_WHILE");
+  else if(strncmp(lexeme, "while",5) == 0&&strlen(lexeme)==5)
+  {
+    nextToken = KEY_WHILE;
+    strcpy(tokenClass, "KEY_WHILE");
   }
-  else if(strncmp(lexeme, "do", 2) == 0&&strlen(lexeme)==2){ 
+  else if(strncmp(lexeme, "do", 2) == 0&&strlen(lexeme)==2)
+  { 
     nextToken = KEY_DO;
-      strcpy(tokenClass, "KEY_DO");
+    strcpy(tokenClass, "KEY_DO");
   }
   else
   {
-      nextToken = IDENT;
-      strcpy(tokenClass, "IDENT");
+    nextToken = IDENT;
+    strcpy(tokenClass, "IDENT");
   }
 }
 
