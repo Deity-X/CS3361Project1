@@ -503,7 +503,7 @@ void number()
   
 /******************************************************/
 /* main driver */
-int main() 
+int main(int argc, char* argv[]) 
 {
   printf("DCooke Analyzer :: R11744065 \n");
   /* Open the input data file and process its contents */
