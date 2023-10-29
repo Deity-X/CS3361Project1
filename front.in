@@ -1,1 +1,12 @@
-(sum + 47) / total
+f = 15;
+i = 11;
+
+read(n);
+
+do
+{
+  n = i + f;
+  f--;
+  i++
+}
+while (f == i)
