@@ -1,6 +1,3 @@
-/* Name: Garreth Salang
-   R#:R11744065
-   Project 1 */
 #include <stdio.h>
 #include <ctype.h>
 #include <string.h>
@@ -36,7 +33,8 @@
 #define KEY_DO 41
 
 int lex();
-char tokenClass [20];
+char tokenClass [100];
+static void keyTerms();
 
 /* Functions for BNF Grammar */
 void stmt();
@@ -61,6 +59,29 @@ static void addChar();
 static void getChar();
 static void getNonBlank();
 
+/******************************************************/
+/* main driver */
+int main(int argc, char* argv[]) 
+{
+  printf("DCooke Analyzer :: R11744065 \n");
+  /* Open the input data file and process its contents */
+  if ((in_fp = fopen("front.in", "r")) == NULL) 
+  {
+    printf("ERROR - cannot open front.in \n");
+  } 
+  else 
+  {
+    getChar();
+    do 
+    {
+      lex();
+      stmt();
+    } 
+    while (nextToken != EOF);
+  }
+  return 0;
+}
+
 /*****************************************************/
 //lookup Function
 static int lookup(char ch)
@@ -74,22 +95,22 @@ static int lookup(char ch)
         strcpy(tokenClass, "ASSIGN_OP");
         getChar();
         //lookup for '=='
-        if (nextChar == '=') 
+        if(strcmp(&nextChar, "=") == 0)
         {
-          addChar();
-          nextToken = EQUAL_OP;
-          strcpy(tokenClass, "EQUAL_OP");
+          addChar();  
+          nextToken = ASSIGN_OP;
+          strcpy(tokenClass, "ASSIGN_OP");
           getChar();
         }
         break;
-
+      
       case '<':
         addChar();
         nextToken = LESSER_OP;
         strcpy(tokenClass, "LESSER_OP");
         getChar();
         //lookup for '<='
-        if (nextChar == '=') 
+        if(strcmp(&nextChar, "=") == 0)
         {
           addChar();
           nextToken = LEQUAL_OP;
@@ -97,22 +118,22 @@ static int lookup(char ch)
           getChar();
         }
         break;
-
+      
       case '>':
         addChar();
         nextToken = GREATER_OP;
         strcpy(tokenClass, "GREATER_OP");
         getChar();
         //lookup for '>='
-        if (nextChar == '=') 
+        if(strcmp(&nextChar, "=") == 0)
         {
           addChar();
-          nextToken = GEQUAL_OP;
-          strcpy(tokenClass, "GEQUAL_OP");
-          getChar();
+            nextToken = GEQUAL_OP;
+            strcpy(tokenClass, "GEQUAL_OP");
+            getChar();
         }
         break;
-
+      
       case '!':
         addChar();
         nextToken = UNKNOWN;
@@ -127,83 +148,91 @@ static int lookup(char ch)
           getChar();
         }
         break;
-
+      
       case ';':
         addChar();
         nextToken = SEMICOLON;
         strcpy(tokenClass, "SEMICOLON");
+        getChar();
         break;
-
+      
       case '+':
         addChar();
         nextToken = ADD_OP;
         strcpy(tokenClass, "ADD_OP");
         getChar();
         //lookup for '++'
-        if (nextChar == '+') 
+        if(strcmp(&nextChar, "+") == 0)
         {
           addChar();
-          nextToken = INC_OP;
-          strcpy(tokenClass, "INC_OP");
-          getChar();
+            nextToken = INC_OP;
+            strcpy(tokenClass, "INC_OP");
+            getChar();
         }
         break;
-
+      
       case '-':
         addChar();
         nextToken = SUB_OP;
         strcpy(tokenClass, "SUB_OP");
         getChar();
         //lookup for '--'
-        if (nextChar == '-') 
+        if(strcmp(&nextChar, "-") == 0)
         {
           addChar();
-          nextToken = DEC_OP;
-          strcpy(tokenClass, "DEC_OP");
-          getChar();
+            nextToken = DEC_OP;
+            strcpy(tokenClass, "DEC_OP");
+            getChar();
         }
         break;
-
+      
       case '*':
         addChar();
         nextToken = MULT_OP;
         strcpy(tokenClass, "MULT_OP");
+        getChar();
         break;
-
+      
       case '/':
         addChar();
         nextToken = DIV_OP;
         strcpy(tokenClass, "DIV_OP");
+        getChar();
         break;
-
+      
       case '(':
         addChar();
         nextToken = LEFT_PAREN;
         strcpy(tokenClass, "LEFT_PAREN");
+        getChar();
         break;
-
+      
       case ')':
         addChar();
         nextToken = RIGHT_PAREN;
         strcpy(tokenClass, "RIGHT_PAREN");
+        getChar();
         break;
-
+      
       case '{':
         addChar();
         nextToken = LEFT_CBRACE;
         strcpy(tokenClass, "LEFT_CBRACE");
+        getChar();
         break;
-
+      
       case '}':
         addChar();
         nextToken = RIGHT_CBRACE;
         strcpy(tokenClass, "RIGHT_CBRACE");
+        getChar();
         break;
-
+      
       default:
         addChar();
         nextToken = UNKNOWN;
         strcpy(tokenClass, "UNKNOWN");
+        getChar();
         break;
     }
   return nextToken;
@@ -231,16 +260,16 @@ static void getChar()
   if ((nextChar = getc(in_fp)) != EOF) 
   {
       if (isalpha(nextChar))
-        charClass = LETTER;
+          charClass = LETTER;
       else if (isdigit(nextChar))
-        charClass = DIGIT;
+          charClass = DIGIT;
       else charClass = UNKNOWN;
   } 
   else 
-  {
-    charClass = EOF;
+  
+      charClass = EOF;
   }
-}
+
 /*****************************************************/
 //getNonBlank function
 static void getNonBlank()
@@ -258,35 +287,8 @@ int lex()
   switch (charClass)
   {
     case LETTER:
-      addChar();
-      getChar();
-      while (charClass == LETTER || charClass == DIGIT)
-        {
-          addChar();
-          getChar();
-        }
-
-        if (strcmp(lexeme, "read") == 0)
-        {
-          nextToken = KEY_READ;
-          strcpy(tokenClass, "KEY_READ");
-          break;
-        }
-        else if (strcmp(lexeme, "while") == 0)
-        {
-          nextToken = KEY_WHILE;
-          strcpy(tokenClass, "KEY_WHILE");
-          break;
-        }
-        else if (strcmp(lexeme, "do") == 0)
-        {
-          nextToken = KEY_DO;
-          strcpy(tokenClass, "KEY_DO");
-          break;
-        }
-        nextToken = IDENT;
-        strcpy(tokenClass, "IDENT");
-        break;
+      keyTerms();
+      break;
 
     case DIGIT:
       addChar();
@@ -296,8 +298,7 @@ int lex()
         addChar();
         getChar();
       }
-      nextToken = INT_LIT;
-      strcpy(tokenClass, "INT_LIT");
+      nextToken = IDENT;
       break;
 
     case UNKNOWN:
@@ -313,14 +314,50 @@ int lex()
       lexeme[3] = 0;
       break;
   }
-
-  if (nextToken != -1)
-  {
-      printf("%s %s\n", lexeme, tokenClass);
-  }
+  
+  if(strncmp(lexeme,"EOF",3)!=0)
+    printf("%s\t%s\n", lexeme, tokenClass);
   return nextToken;
 }
-
+/*****************************************************/
+/* Function for assigning read, write, while, do */
+static void keyTerms()
+{
+  int i = 0;
+  addChar();
+  i++;
+  getChar();
+  while (charClass == LETTER) {
+      addChar();
+      getChar();
+      i++;
+  }
+  if(strncmp(lexeme, "read", 4) == 0&&strlen(lexeme)==4)
+  { 
+    nextToken = KEY_READ;
+    strcpy(tokenClass, "KEY_READ");
+  }
+  else if(strncmp(lexeme, "write",5) == 0&&strlen(lexeme)==5)
+  {
+    nextToken = KEY_WRITE;
+    strcpy(tokenClass, "KEY_WRITE");
+  }
+  else if(strncmp(lexeme, "while",5) == 0&&strlen(lexeme)==5)
+  {
+    nextToken = KEY_WHILE;
+    strcpy(tokenClass, "KEY_WHILE");
+  }
+  else if(strncmp(lexeme, "do", 2) == 0&&strlen(lexeme)==2)
+  { 
+    nextToken = KEY_DO;
+    strcpy(tokenClass, "KEY_DO");
+  }
+  else
+  {
+    nextToken = IDENT;
+    strcpy(tokenClass, "IDENT");
+  }
+}
 
 /*****************************************************/
 /*The following functions are a part of parser.c*/
@@ -329,13 +366,14 @@ int lex()
 void stmt()
 {
   //read(V)
-  if (nextToken == KEY_READ || nextToken == KEY_WRITE)
+  if (nextToken == KEY_READ||nextToken == KEY_WRITE)
   {
     lex();
       if (nextToken == LEFT_PAREN)
       {
-        lex();
-        
+          lex();
+          parse();
+
         if (nextToken == RIGHT_PAREN)
         {
           lex();
@@ -349,6 +387,7 @@ void stmt()
     if (nextToken == LEFT_PAREN)
     {
         lex();
+        parse();
 
       if (nextToken == RIGHT_PAREN)
       {
@@ -398,37 +437,10 @@ void character()
 {
   expr();
 
-  while (1) 
+  while (nextToken == LESSER_OP || nextToken == GREATER_OP|| nextToken == EQUAL_OP|| nextToken == NEQUAL_OP|| nextToken == LEQUAL_OP|| nextToken == GEQUAL_OP) 
   {
-      switch (nextToken) 
-      {
-          case LESSER_OP:
-            lex();
-            expr();
-            break;
-          case GREATER_OP:
-            lex();
-            expr();
-            break;
-          case EQUAL_OP:
-            lex();
-            expr();
-            break;
-          case NEQUAL_OP:
-            lex();
-            expr();
-             break;
-          case LEQUAL_OP:
-            lex();
-            expr();
-            break;
-          case GEQUAL_OP:
-            lex();
-            expr();
-            break;
-          default:
-        return;
-      }
+    lex();
+    expr();
   }
 }
 
@@ -472,42 +484,33 @@ void factor()
     {
       lex();
     }
-    else if(nextToken == IDENT)
-    {
-      lex();
-    }
     else if (RIGHT_PAREN)
     {
       lex();
     }
   } 
-  //O, N, V
-  else if (nextToken == INC_OP || nextToken == DEC_OP || nextToken == INT_LIT || nextToken == IDENT)
+  //O
+  else if (nextToken == INC_OP || nextToken == DEC_OP)
   {
-    lex();
+    parse();
   } 
+  //N
+  else if (nextToken == INT_LIT)
+  {
+    parse();
+  } 
+  //V
+  else if (nextToken == IDENT)
+  {
+    parse();
+  }
 }
 
-
-/******************************************************/
-/* main driver */
-int main(int argc, char* argv[]) 
+/*****************************************************/
+/* Function for O ::= V++ | V-- */
+/* Function for V ::= a | b | … | y | z | aV | bV | … | yV | zV */
+/* Function for N ::= 0 | 1 | … | 8 | 9 | 0N | 1N | … | 8N | 9N */
+void parse()
 {
-  printf("DCooke Analyzer :: R11744065 \n");
-  /* Open the input data file and process its contents */
-  if ((in_fp = fopen("front.in", "r")) == NULL) 
-  {
-    printf("ERROR - cannot open front.in \n");
-  } 
-  else 
-  {
-    getChar();
-    do 
-    {
-      lex();
-      stmt();
-    } 
-    while (nextToken != EOF);
-  }
-  return 0;
+  lex();
 }
