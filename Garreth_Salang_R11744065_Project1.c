@@ -110,6 +110,7 @@ static int lookup(char ch)
           addChar();
           nextToken = GEQUAL_OP;
           strcpy(tokenClass, "GEQUAL_OP");
+          getChar();
         }
         break;
 
@@ -138,6 +139,7 @@ static int lookup(char ch)
         addChar();
         nextToken = ADD_OP;
         strcpy(tokenClass, "ADD_OP");
+        getChar();
         //lookup for '++'
         if (nextChar == '+') 
         {
@@ -203,6 +205,7 @@ static int lookup(char ch)
         addChar();
         nextToken = UNKNOWN;
         strcpy(tokenClass, "UNKNOWN");
+        getChar();
         break;
     }
   return nextToken;
@@ -519,7 +522,7 @@ int main(int argc, char* argv[])
 {
   printf("DCooke Analyzer :: R11744065 \n");
   /* Open the input data file and process its contents */
-  if ((in_fp = fopen(argv[1], "r")) == NULL) 
+  if ((in_fp = fopen("front.in", "r")) == NULL) 
   {
     printf("ERROR - cannot open front.in \n");
   } 
