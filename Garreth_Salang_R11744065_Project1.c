@@ -64,6 +64,29 @@ static void addChar();
 static void getChar();
 static void getNonBlank();
 
+/******************************************************/
+/* main driver */
+int main(int argc, char* argv[]) 
+{
+  printf("DCooke Analyzer :: R11744065 \n");
+  /* Open the input data file and process its contents */
+  if ((in_fp = fopen("front.in", "r")) == NULL) 
+  {
+    printf("ERROR - cannot open front.in \n");
+  } 
+  else 
+  {
+    getChar();
+    do 
+    {
+      lex();
+      stmt();
+    } 
+    while (nextToken != EOF);
+  }
+  return 0;
+}
+
 /*****************************************************/
 //lookup Fnction
 static int lookup(char ch)
@@ -75,6 +98,7 @@ static int lookup(char ch)
         addChar();
         nextToken = ASSIGN_OP;
         strcpy(tokenClass, "ASSIGN_OP");
+        getChar();
         //lookup for '=='
         if (nextChar == '=') 
         {
@@ -133,6 +157,7 @@ static int lookup(char ch)
       case ';':
         addChar();
         nextToken = SEMICOLON;
+        getChar();
         break;
       
       case '+':
@@ -168,36 +193,43 @@ static int lookup(char ch)
       case '*':
         addChar();
         nextToken = MULT_OP;
+        getChar();
         break;
       
       case '/':
         addChar();
         nextToken = DIV_OP;
+        getChar();
         break;
       
       case '(':
         addChar();
         nextToken = LEFT_PAREN;
+        getChar();
         break;
       
       case ')':
         addChar();
         nextToken = RIGHT_PAREN;
+        getChar();
         break;
       
       case '{':
         addChar();
         nextToken = LEFT_CBRACE;
+        getChar();
         break;
       
       case '}':
         addChar();
         nextToken = RIGHT_CBRACE;
+        getChar();
         break;
       
       default:
         addChar();
         nextToken = UNKNOWN;
+        getChar();
         break;
     }
   return nextToken;
@@ -499,27 +531,4 @@ void variable()
 void number()
 {
   lex();
-}
-  
-/******************************************************/
-/* main driver */
-int main(int argc, char* argv[]) 
-{
-  printf("DCooke Analyzer :: R11744065 \n");
-  /* Open the input data file and process its contents */
-  if ((in_fp = fopen("front.in", "r")) == NULL) 
-  {
-    printf("ERROR - cannot open front.in \n");
-  } 
-  else 
-  {
-    getChar();
-    do 
-    {
-      lex();
-      stmt();
-    } 
-    while (nextToken != EOF);
-  }
-  return 0;
 }
