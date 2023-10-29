@@ -334,35 +334,35 @@ int lex()
 /* Function for assigning read, write, while, do */
 static void keyTerms()
 {
-  char keyword[10];
-  int keywordLength = 0;
-
-  while (isalpha(nextChar)) 
-  {
-    keyword[keywordLength++] = nextChar;
-    addChar();
-    getChar();
+  int i = 0;
+  addChar();
+  i++;
+  getChar();
+  while (charClass == LETTER) {
+      addChar();
+      getChar();
+      i++;
   }
-
-  if (strcmp(keyword, "read") == 0)
-  {
+  if(strncmp(lexeme, "read", 4) == 0&&strlen(lexeme)==4){ 
     nextToken = KEY_READ;
+      strcpy(tokenClass, "KEY_READ");
   }
-  else if (strcmp(keyword, "write") == 0)
-  {
-    nextToken = KEY_WRITE;
+  else if(strncmp(lexeme, "write",5) == 0&&strlen(lexeme)==5){
+      nextToken = KEY_WRITE;
+      strcpy(tokenClass, "KEY_WRITE");
   }
-  else if (strcmp(keyword, "while") == 0)
-  {
-    nextToken = KEY_WHILE;
+  else if(strncmp(lexeme, "while",5) == 0&&strlen(lexeme)==5){
+      nextToken = KEY_WHILE;
+      strcpy(tokenClass, "KEY_WHILE");
   }
-  else if (strcmp(keyword, "do") == 0)
-  {
+  else if(strncmp(lexeme, "do", 2) == 0&&strlen(lexeme)==2){ 
     nextToken = KEY_DO;
-  } 
+      strcpy(tokenClass, "KEY_DO");
+  }
   else
   {
-    nextToken = IDENT;
+      nextToken = IDENT;
+      strcpy(tokenClass, "IDENT");
   }
 }
 
