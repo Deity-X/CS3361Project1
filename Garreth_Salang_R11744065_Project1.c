@@ -522,7 +522,7 @@ int main(int argc, char* argv[])
 {
   printf("DCooke Analyzer :: R11744065 \n");
   /* Open the input data file and process its contents */
-  if ((in_fp = fopen("ginput_0.txt, "r")) == NULL) 
+  if ((in_fp = fopen("ginput_0.txt", "r")) == NULL) 
   {
     printf("ERROR - cannot open front.in \n");
   } 
