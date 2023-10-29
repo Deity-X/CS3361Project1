@@ -36,7 +36,8 @@
 #define KEY_DO 41
 
 int lex();
-char tokenClass [20];
+char tokenClass [100];
+static void keyTerms();
 
 /* Functions for BNF Grammar */
 void stmt();
@@ -132,6 +133,7 @@ static int lookup(char ch)
         addChar();
         nextToken = SEMICOLON;
         strcpy(tokenClass, "SEMICOLON");
+        getChar();
         break;
 
       case '+':
@@ -168,42 +170,50 @@ static int lookup(char ch)
         addChar();
         nextToken = MULT_OP;
         strcpy(tokenClass, "MULT_OP");
+        getChar();
         break;
 
       case '/':
         addChar();
         nextToken = DIV_OP;
         strcpy(tokenClass, "DIV_OP");
+        getChar();
         break;
 
       case '(':
         addChar();
         nextToken = LEFT_PAREN;
         strcpy(tokenClass, "LEFT_PAREN");
+        getChar();
         break;
 
       case ')':
         addChar();
         nextToken = RIGHT_PAREN;
         strcpy(tokenClass, "RIGHT_PAREN");
+        getChar();
         break;
 
       case '{':
         addChar();
         nextToken = LEFT_CBRACE;
         strcpy(tokenClass, "LEFT_CBRACE");
+        getChar();
+        getChar();
         break;
 
       case '}':
         addChar();
         nextToken = RIGHT_CBRACE;
         strcpy(tokenClass, "RIGHT_CBRACE");
+        getChar();
         break;
 
       default:
         addChar();
         nextToken = UNKNOWN;
         strcpy(tokenClass, "UNKNOWN");
+        getChar();
         break;
     }
   return nextToken;
@@ -238,7 +248,7 @@ static void getChar()
   } 
   else 
   {
-    charClass = EOF;
+      charClass = EOF;
   }
 }
 /*****************************************************/
@@ -258,35 +268,8 @@ int lex()
   switch (charClass)
   {
     case LETTER:
-      addChar();
-      getChar();
-      while (charClass == LETTER || charClass == DIGIT)
-        {
-          addChar();
-          getChar();
-        }
-
-        if (strcmp(lexeme, "read") == 0)
-        {
-          nextToken = KEY_READ;
-          strcpy(tokenClass, "KEY_READ");
-          break;
-        }
-        else if (strcmp(lexeme, "while") == 0)
-        {
-          nextToken = KEY_WHILE;
-          strcpy(tokenClass, "KEY_WHILE");
-          break;
-        }
-        else if (strcmp(lexeme, "do") == 0)
-        {
-          nextToken = KEY_DO;
-          strcpy(tokenClass, "KEY_DO");
-          break;
-        }
-        nextToken = IDENT;
-        strcpy(tokenClass, "IDENT");
-        break;
+      keyTerms();
+      break;
 
     case DIGIT:
       addChar();
@@ -296,7 +279,7 @@ int lex()
         addChar();
         getChar();
       }
-      nextToken = INT_LIT;
+      nextToken = IDENT;
       strcpy(tokenClass, "INT_LIT");
       break;
 
@@ -314,13 +297,54 @@ int lex()
       break;
   }
 
-  if (nextToken != -1)
+  if(strncmp(lexeme,"EOF",3)!=0)
   {
-      printf("%s %s\n", lexeme, tokenClass);
+    printf("%s\t%s\n", lexeme, tokenClass);
   }
+  
   return nextToken;
 }
-
+/*****************************************************/
+/* Function for assigning read, write, while, do, IDENT */
+static void keyTerms()
+{
+  int i = 0;
+  addChar();
+  i++;
+  getChar();
+  while (charClass == LETTER) 
+  {
+    addChar();
+    getChar();
+    i++;
+  }
+  
+  if(strncmp(lexeme, "read", 4) == 0&&strlen(lexeme)==4)
+  { 
+    nextToken = KEY_READ;
+    strcpy(tokenClass, "KEY_READ");
+  }
+  else if(strncmp(lexeme, "write",5) == 0&&strlen(lexeme)==5)
+  {
+    nextToken = KEY_WRITE;
+    strcpy(tokenClass, "KEY_WRITE");
+  }
+  else if(strncmp(lexeme, "while",5) == 0&&strlen(lexeme)==5)
+  {
+    nextToken = KEY_WHILE;
+    strcpy(tokenClass, "KEY_WHILE");
+  }
+  else if(strncmp(lexeme, "do", 2) == 0&&strlen(lexeme)==2)
+  { 
+    nextToken = KEY_DO;
+    strcpy(tokenClass, "KEY_DO");
+  }
+  else
+  {
+    nextToken = IDENT;
+    strcpy(tokenClass, "IDENT");
+  }
+}
 
 /*****************************************************/
 /*The following functions are a part of parser.c*/
@@ -334,8 +358,9 @@ void stmt()
     lex();
       if (nextToken == LEFT_PAREN)
       {
-        lex();
-        
+          lex();
+          parse();
+
         if (nextToken == RIGHT_PAREN)
         {
           lex();
@@ -349,6 +374,7 @@ void stmt()
     if (nextToken == LEFT_PAREN)
     {
         lex();
+        parse();
 
       if (nextToken == RIGHT_PAREN)
       {
@@ -484,10 +510,19 @@ void factor()
   //O, N, V
   else if (nextToken == INC_OP || nextToken == DEC_OP || nextToken == INT_LIT || nextToken == IDENT)
   {
-    lex();
+    parse();
   } 
 }
 
+/*****************************************************/
+/* This function will parse the terms
+This is for the grammars: O ::= V++ | V--
+V ::= a | b | … | y | z | aV | bV | … | yV | zV
+N ::= 0 | 1 | … | 8 | 9 | 0N | 1N | … | 8N | 9N */
+void parse()
+{
+  lex();
+}
 
 /******************************************************/
 /* main driver */
@@ -511,3 +546,5 @@ int main(int argc, char* argv[])
   }
   return 0;
 }
+
+
