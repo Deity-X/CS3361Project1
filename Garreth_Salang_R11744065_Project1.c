@@ -73,12 +73,14 @@ static int lookup(char ch)
         addChar();
         nextToken = ASSIGN_OP;
         strcpy(tokenClass, "ASSIGN_OP");
+        getChar();
         //lookup for '=='
         if (nextChar == '=') 
         {
           addChar();
           nextToken = EQUAL_OP;
           strcpy(tokenClass, "EQUAL_OP");
+          getChar();
         }
         break;
 
@@ -86,12 +88,14 @@ static int lookup(char ch)
         addChar();
         nextToken = LESSER_OP;
         strcpy(tokenClass, "LESSER_OP");
+        getChar();
         //lookup for '<='
         if (nextChar == '=') 
         {
           addChar();
           nextToken = LEQUAL_OP;
           strcpy(tokenClass, "LEQUAL_OP");
+          getChar();
         }
         break;
 
@@ -99,12 +103,14 @@ static int lookup(char ch)
         addChar();
         nextToken = GREATER_OP;
         strcpy(tokenClass, "GREATER_OP");
+        getChar();
         //lookup for '>='
         if (nextChar == '=') 
         {
           addChar();
           nextToken = GEQUAL_OP;
           strcpy(tokenClass, "GEQUAL_OP");
+          getChar();
         }
         break;
 
@@ -112,12 +118,14 @@ static int lookup(char ch)
         addChar();
         nextToken = UNKNOWN;
         strcpy(tokenClass, "UNKNOWN");
+        getChar();
         //lookup for '!='
         if (nextChar == '=') 
         {
           addChar();
           nextToken = NEQUAL_OP;
           strcpy(tokenClass, "NEQUAL_OP");
+          getChar();
         }
         break;
 
@@ -131,12 +139,14 @@ static int lookup(char ch)
         addChar();
         nextToken = ADD_OP;
         strcpy(tokenClass, "ADD_OP");
+        getChar();
         //lookup for '++'
         if (nextChar == '+') 
         {
           addChar();
           nextToken = INC_OP;
           strcpy(tokenClass, "INC_OP");
+          getChar();
         }
         break;
 
@@ -144,12 +154,14 @@ static int lookup(char ch)
         addChar();
         nextToken = SUB_OP;
         strcpy(tokenClass, "SUB_OP");
+        getChar();
         //lookup for '--'
         if (nextChar == '-') 
         {
           addChar();
           nextToken = DEC_OP;
           strcpy(tokenClass, "DEC_OP");
+          getChar();
         }
         break;
 
