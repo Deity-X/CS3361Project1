@@ -73,14 +73,12 @@ static int lookup(char ch)
         addChar();
         nextToken = ASSIGN_OP;
         strcpy(tokenClass, "ASSIGN_OP");
-        getChar();
         //lookup for '=='
         if (nextChar == '=') 
         {
           addChar();
           nextToken = EQUAL_OP;
           strcpy(tokenClass, "EQUAL_OP");
-          getChar();
         }
         break;
 
@@ -88,14 +86,12 @@ static int lookup(char ch)
         addChar();
         nextToken = LESSER_OP;
         strcpy(tokenClass, "LESSER_OP");
-        getChar();
         //lookup for '<='
         if (nextChar == '=') 
         {
           addChar();
           nextToken = LEQUAL_OP;
           strcpy(tokenClass, "LEQUAL_OP");
-          getChar();
         }
         break;
 
@@ -103,14 +99,12 @@ static int lookup(char ch)
         addChar();
         nextToken = GREATER_OP;
         strcpy(tokenClass, "GREATER_OP");
-        getChar();
         //lookup for '>='
         if (nextChar == '=') 
         {
           addChar();
           nextToken = GEQUAL_OP;
           strcpy(tokenClass, "GEQUAL_OP");
-          getChar();
         }
         break;
 
@@ -118,14 +112,12 @@ static int lookup(char ch)
         addChar();
         nextToken = UNKNOWN;
         strcpy(tokenClass, "UNKNOWN");
-        getChar();
         //lookup for '!='
         if (nextChar == '=') 
         {
           addChar();
           nextToken = NEQUAL_OP;
           strcpy(tokenClass, "NEQUAL_OP");
-          getChar();
         }
         break;
 
@@ -139,14 +131,12 @@ static int lookup(char ch)
         addChar();
         nextToken = ADD_OP;
         strcpy(tokenClass, "ADD_OP");
-        getChar();
         //lookup for '++'
         if (nextChar == '+') 
         {
           addChar();
           nextToken = INC_OP;
           strcpy(tokenClass, "INC_OP");
-          getChar();
         }
         break;
 
@@ -154,14 +144,12 @@ static int lookup(char ch)
         addChar();
         nextToken = SUB_OP;
         strcpy(tokenClass, "SUB_OP");
-        getChar();
         //lookup for '--'
         if (nextChar == '-') 
         {
           addChar();
           nextToken = DEC_OP;
           strcpy(tokenClass, "DEC_OP");
-          getChar();
         }
         break;
 
@@ -205,7 +193,6 @@ static int lookup(char ch)
         addChar();
         nextToken = UNKNOWN;
         strcpy(tokenClass, "UNKNOWN");
-        getChar();
         break;
     }
   return nextToken;
@@ -316,17 +303,17 @@ static void keyTerms()
     nextToken = KEY_READ;
     strcpy(tokenClass, "KEY_READ");
   }
-  else if(strncmp(lexeme, "write",5) == 0&&strlen(lexeme)==5)
+  else if(strncmp(lexeme, "write",5) == 0&&strlen(lexeme) == 5)
   {
     nextToken = KEY_WRITE;
     strcpy(tokenClass, "KEY_WRITE");
   }
-  else if(strncmp(lexeme, "while",5) == 0&&strlen(lexeme)==5)
+  else if(strncmp(lexeme, "while",5) == 0&&strlen(lexeme) == 5)
   {
     nextToken = KEY_WHILE;
     strcpy(tokenClass, "KEY_WHILE");
   }
-  else if(strncmp(lexeme, "do", 2) == 0&&strlen(lexeme)==2)
+  else if(strncmp(lexeme, "do", 2) == 0&&strlen(lexeme) == 2)
   { 
     nextToken = KEY_DO;
     strcpy(tokenClass, "KEY_DO");
@@ -350,9 +337,8 @@ void stmt()
     lex();
       if (nextToken == LEFT_PAREN)
       {
-          lex();
-          parse();
-
+        lex();
+        
         if (nextToken == RIGHT_PAREN)
         {
           lex();
@@ -502,18 +488,8 @@ void factor()
   //O, N, V
   else if (nextToken == INC_OP || nextToken == DEC_OP || nextToken == INT_LIT || nextToken == IDENT)
   {
-    parse();
+    lex();
   } 
-}
-
-/*****************************************************/
-/* This function will parse the terms
-This is for the grammars: O ::= V++ | V--
-V ::= a | b | … | y | z | aV | bV | … | yV | zV
-N ::= 0 | 1 | … | 8 | 9 | 0N | 1N | … | 8N | 9N */
-void parse()
-{
-  lex();
 }
 
 /******************************************************/
@@ -522,7 +498,7 @@ int main(int argc, char* argv[])
 {
   printf("DCooke Analyzer :: R11744065 \n");
   /* Open the input data file and process its contents */
-  if ((in_fp = fopen("dcooke_analyzer test.txt", "r")) == NULL) 
+  if ((in_fp = fopen("front.in", "r")) == NULL) 
   {
     printf("ERROR - cannot open front.in \n");
   } 
