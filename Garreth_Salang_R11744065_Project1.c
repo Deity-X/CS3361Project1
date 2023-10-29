@@ -110,7 +110,6 @@ static int lookup(char ch)
           addChar();
           nextToken = GEQUAL_OP;
           strcpy(tokenClass, "GEQUAL_OP");
-          getChar();
         }
         break;
 
@@ -133,14 +132,12 @@ static int lookup(char ch)
         addChar();
         nextToken = SEMICOLON;
         strcpy(tokenClass, "SEMICOLON");
-        getChar();
         break;
 
       case '+':
         addChar();
         nextToken = ADD_OP;
         strcpy(tokenClass, "ADD_OP");
-        getChar();
         //lookup for '++'
         if (nextChar == '+') 
         {
@@ -170,49 +167,42 @@ static int lookup(char ch)
         addChar();
         nextToken = MULT_OP;
         strcpy(tokenClass, "MULT_OP");
-        getChar();
         break;
 
       case '/':
         addChar();
         nextToken = DIV_OP;
         strcpy(tokenClass, "DIV_OP");
-        getChar();
         break;
 
       case '(':
         addChar();
         nextToken = LEFT_PAREN;
         strcpy(tokenClass, "LEFT_PAREN");
-        getChar();
         break;
 
       case ')':
         addChar();
         nextToken = RIGHT_PAREN;
         strcpy(tokenClass, "RIGHT_PAREN");
-        getChar();
         break;
 
       case '{':
         addChar();
         nextToken = LEFT_CBRACE;
         strcpy(tokenClass, "LEFT_CBRACE");
-        getChar();
         break;
 
       case '}':
         addChar();
         nextToken = RIGHT_CBRACE;
         strcpy(tokenClass, "RIGHT_CBRACE");
-        getChar();
         break;
 
       default:
         addChar();
         nextToken = UNKNOWN;
         strcpy(tokenClass, "UNKNOWN");
-        getChar();
         break;
     }
   return nextToken;
@@ -240,16 +230,16 @@ static void getChar()
   if ((nextChar = getc(in_fp)) != EOF) 
   {
       if (isalpha(nextChar))
-          charClass = LETTER;
+        charClass = LETTER;
       else if (isdigit(nextChar))
-          charClass = DIGIT;
+        charClass = DIGIT;
       else charClass = UNKNOWN;
   } 
   else 
-
+  {
       charClass = EOF;
   }
-
+}
 /*****************************************************/
 //getNonBlank function
 static void getNonBlank()
@@ -297,7 +287,10 @@ int lex()
   }
 
   if(strncmp(lexeme,"EOF",3)!=0)
+  {
     printf("%s\t%s\n", lexeme, tokenClass);
+  }
+  
   return nextToken;
 }
 /*****************************************************/
@@ -337,8 +330,8 @@ static void keyTerms()
   }
   else
   {
-      nextToken = IDENT;
-      strcpy(tokenClass, "IDENT");
+    nextToken = IDENT;
+    strcpy(tokenClass, "IDENT");
   }
 }
 
@@ -494,6 +487,10 @@ void factor()
     {
       lex();
     }
+    else if(nextToken == IDENT)
+    {
+      lex();
+    }
     else if (RIGHT_PAREN)
     {
       lex();
@@ -507,9 +504,10 @@ void factor()
 }
 
 /*****************************************************/
-/* Function for O ::= V++ | V-- */
-/* Function for V ::= a | b | … | y | z | aV | bV | … | yV | zV */
-/* Function for N ::= 0 | 1 | … | 8 | 9 | 0N | 1N | … | 8N | 9N */
+/* This function will parse the terms
+This is for the grammars: O ::= V++ | V--
+V ::= a | b | … | y | z | aV | bV | … | yV | zV
+N ::= 0 | 1 | … | 8 | 9 | 0N | 1N | … | 8N | 9N */
 void parse()
 {
   lex();
@@ -521,7 +519,7 @@ int main(int argc, char* argv[])
 {
   printf("DCooke Analyzer :: R11744065 \n");
   /* Open the input data file and process its contents */
-  if ((in_fp = fopen("front.in", "r")) == NULL) 
+  if ((in_fp = fopen(argv[1], "r")) == NULL) 
   {
     printf("ERROR - cannot open front.in \n");
   } 
