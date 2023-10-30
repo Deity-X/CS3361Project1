@@ -258,10 +258,6 @@ int lex()
 
   switch (charClass)
   {
-    case LETTER:
-      keyTerms();
-      break;
-
     case DIGIT:
       addChar();
       getChar();
@@ -273,10 +269,13 @@ int lex()
       nextToken = INT_LIT;
       strcpy(tokenClass, "INT_LIT");
       break;
+    
+    case LETTER:
+      keyTerms();
+      break;
 
     case UNKNOWN:
       lookup(nextChar);
-      getChar();
       break;
 
     case EOF:
@@ -288,9 +287,9 @@ int lex()
       break;
   }
 
-  if(strncmp(lexeme,"EOF",3)!=0)
+  if (strncmp(lexeme,"EOF",3)!= -1)
   {
-    printf("%s\t%s\n", lexeme, tokenClass);
+    printf("%s %s\n", lexeme, tokenClass);
   }
 
   return nextToken;
@@ -455,44 +454,30 @@ void term()
 /* Function for F ::= (E) | O | N | V */
 void factor()
 {
-  /* CHECK FOR N */
-  if (nextToken == INT_LIT)
-  {
-    parse();
-  }
-  /* Differentiate between O and V */
-
-  else if(nextToken==IDENT)
-  {
-    parse();
-    if(nextToken==INC_OP||nextToken==DEC_OP)
-    { //FINISH OFF O WITHOUT CALLING FUNCTION
-      lex();
-    }
-  }
-  else if(nextToken==INC_OP||nextToken==DEC_OP)
-  { //STARTS O IF SYMBOL IS AT BEGINNING
-    lex();
-    parse();
-  }
-
-  else 
-  {
+  if (nextToken == IDENT || nextToken == INT_LIT) {
+    lex(); /* Get the next token */
+  } else {
+    /* If the RHS is (<expr>), call lex to pass over the 
+    left parenthesis, call expr, and check for the right 
+    parenthesis */
     if (nextToken == LEFT_PAREN) 
     {
-      lex();
-      expr();
-      if (nextToken == RIGHT_PAREN)
-      {
-        lex();
-      }
-    }
-  }
+        lex(); 
+        expr();
+        if (nextToken == RIGHT_PAREN) 
+        {
+            lex(); 
+        } 
+        else 
+        {
+        }
+    } /* End of if (nextToken == ... */
+    /* It was not an id, an integer literal, or a left parenthesis */
+  } /* End of else */
 }
 
 /*****************************************************/
-/* This function will parse the terms
-This is for the grammars: O ::= V++ | V--
+/* This is for the grammars: O ::= V++ | V--
 V ::= a | b | … | y | z | aV | bV | … | yV | zV
 N ::= 0 | 1 | … | 8 | 9 | 0N | 1N | … | 8N | 9N */
 void parse()
