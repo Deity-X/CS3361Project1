@@ -455,27 +455,39 @@ void term()
 /* Function for F ::= (E) | O | N | V */
 void factor()
 {
-  //(E)
-  if (nextToken == LEFT_PAREN || nextToken == RIGHT_PAREN) 
+  /* CHECK FOR N */
+  if (nextToken == INT_LIT)
+  {
+    parse();
+  }
+  /* Differentiate between O and V */
+
+  else if(nextToken==IDENT)
+  {
+    parse();
+    if(nextToken==INC_OP||nextToken==DEC_OP)
+    { //FINISH OFF O WITHOUT CALLING FUNCTION
+      lex();
+    }
+  }
+  else if(nextToken==INC_OP||nextToken==DEC_OP)
+  { //STARTS O IF SYMBOL IS AT BEGINNING
+    lex();
+    parse();
+  }
+
+  else 
   {
     if (nextToken == LEFT_PAREN) 
     {
       lex();
+      expr();
+      if (nextToken == RIGHT_PAREN)
+      {
+        lex();
+      }
     }
-    else if(nextToken == IDENT)
-    {
-      lex();
-    }
-    else if (RIGHT_PAREN)
-    {
-      lex();
-    }
-  } 
-  //O, N, V
-  else if (nextToken == INC_OP || nextToken == DEC_OP || nextToken == INT_LIT || nextToken == IDENT)
-  {
-    parse();
-  } 
+  }
 }
 
 /*****************************************************/
@@ -510,5 +522,3 @@ int main(int argc, char *argv[])
   }
   return 0;
 }
-
-
