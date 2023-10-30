@@ -257,6 +257,7 @@ int lex()
   switch (charClass)
   {
     case LETTER:
+      while (charClass == LETTER)
       keyTerms();
       break;
 
@@ -308,22 +309,22 @@ static void keyTerms()
     i++;
   }
 
-  if(strncmp(lexeme, "read", 4) == 0&&strlen(lexeme)==4)
+  if(strcmp(lexeme, "read") == 0)
   { 
     nextToken = KEY_READ;
     strcpy(tokenClass, "KEY_READ");
   }
-  else if(strncmp(lexeme, "write",5) == 0&&strlen(lexeme)==5)
+  else if(strcmp(lexeme, "write") == 0)
   {
     nextToken = KEY_WRITE;
     strcpy(tokenClass, "KEY_WRITE");
   }
-  else if(strncmp(lexeme, "while",5) == 0&&strlen(lexeme)==5)
+  else if(strcmp(lexeme, "while") == 0)
   {
     nextToken = KEY_WHILE;
     strcpy(tokenClass, "KEY_WHILE");
   }
-  else if(strncmp(lexeme, "do", 2) == 0&&strlen(lexeme)==2)
+  else if(strcmp(lexeme, "do") == 0)
   { 
     nextToken = KEY_DO;
     strcpy(tokenClass, "KEY_DO");
@@ -413,37 +414,10 @@ void character()
 {
   expr();
 
-  while (1) 
+  while (nextToken == LESSER_OP || nextToken == GREATER_OP|| nextToken == EQUAL_OP|| nextToken == NEQUAL_OP|| nextToken == LEQUAL_OP|| nextToken == GEQUAL_OP) 
   {
-      switch (nextToken) 
-      {
-          case LESSER_OP:
-            lex();
-            expr();
-            break;
-          case GREATER_OP:
-            lex();
-            expr();
-            break;
-          case EQUAL_OP:
-            lex();
-            expr();
-            break;
-          case NEQUAL_OP:
-            lex();
-            expr();
-             break;
-          case LEQUAL_OP:
-            lex();
-            expr();
-            break;
-          case GEQUAL_OP:
-            lex();
-            expr();
-            break;
-          default:
-        return;
-      }
+    lex();
+    expr();
   }
 }
 
@@ -535,5 +509,3 @@ int main(int argc, char* argv[])
   }
   return 0;
 }
-
-
