@@ -110,6 +110,7 @@ static int lookup(char ch)
           addChar();
           nextToken = GEQUAL_OP;
           strcpy(tokenClass, "GEQUAL_OP");
+          getChar();
         }
         break;
 
@@ -132,14 +133,12 @@ static int lookup(char ch)
         addChar();
         nextToken = SEMICOLON;
         strcpy(tokenClass, "SEMICOLON");
-        getChar();
         break;
 
       case '+':
         addChar();
         nextToken = ADD_OP;
         strcpy(tokenClass, "ADD_OP");
-        getChar();
         //lookup for '++'
         if (nextChar == '+') 
         {
@@ -169,49 +168,42 @@ static int lookup(char ch)
         addChar();
         nextToken = MULT_OP;
         strcpy(tokenClass, "MULT_OP");\
-        getChar();
         break;
 
       case '/':
         addChar();
         nextToken = DIV_OP;
         strcpy(tokenClass, "DIV_OP");
-        getChar();
         break;
 
       case '(':
         addChar();
         nextToken = LEFT_PAREN;
         strcpy(tokenClass, "LEFT_PAREN");
-        getChar();
         break;
 
       case ')':
         addChar();
         nextToken = RIGHT_PAREN;
         strcpy(tokenClass, "RIGHT_PAREN");
-        getChar();
         break;
 
       case '{':
         addChar();
         nextToken = LEFT_CBRACE;
         strcpy(tokenClass, "LEFT_CBRACE");
-        getChar();
         break;
 
       case '}':
         addChar();
         nextToken = RIGHT_CBRACE;
         strcpy(tokenClass, "RIGHT_CBRACE");
-        getChar();
         break;
 
       default:
         addChar();
         nextToken = UNKNOWN;
         strcpy(tokenClass, "UNKNOWN");
-        getChar();
         break;
     }
   return nextToken;
@@ -249,6 +241,7 @@ static void getChar()
       charClass = EOF;
   }
 }
+
 /*****************************************************/
 //getNonBlank function
 static void getNonBlank()
@@ -422,37 +415,10 @@ void character()
 {
   expr();
 
-  while (1) 
+  while (nextToken == LESSER_OP || nextToken == GREATER_OP|| nextToken == EQUAL_OP|| nextToken == NEQUAL_OP|| nextToken == LEQUAL_OP|| nextToken == GEQUAL_OP) 
   {
-      switch (nextToken) 
-      {
-          case LESSER_OP:
-            lex();
-            expr();
-            break;
-          case GREATER_OP:
-            lex();
-            expr();
-            break;
-          case EQUAL_OP:
-            lex();
-            expr();
-            break;
-          case NEQUAL_OP:
-            lex();
-            expr();
-             break;
-          case LEQUAL_OP:
-            lex();
-            expr();
-            break;
-          case GEQUAL_OP:
-            lex();
-            expr();
-            break;
-          default:
-        return;
-      }
+    lex();
+    expr();
   }
 }
 
@@ -524,7 +490,7 @@ void parse()
 
 /******************************************************/
 /* main driver */
-int main(int argc, char* argv[]) 
+int main(int argc, char *argv[]) 
 {
   printf("DCooke Analyzer :: R11744065 \n");
   /* Open the input data file and process its contents */
