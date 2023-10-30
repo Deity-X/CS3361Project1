@@ -110,7 +110,6 @@ static int lookup(char ch)
           addChar();
           nextToken = GEQUAL_OP;
           strcpy(tokenClass, "GEQUAL_OP");
-          getChar();
         }
         break;
 
@@ -167,7 +166,7 @@ static int lookup(char ch)
       case '*':
         addChar();
         nextToken = MULT_OP;
-        strcpy(tokenClass, "MULT_OP");\
+        strcpy(tokenClass, "MULT_OP");
         break;
 
       case '/':
@@ -241,7 +240,6 @@ static void getChar()
       charClass = EOF;
   }
 }
-
 /*****************************************************/
 //getNonBlank function
 static void getNonBlank()
@@ -258,24 +256,25 @@ int lex()
 
   switch (charClass)
   {
-    case DIGIT:
-      addChar();
-      getChar();
-      while (charClass == DIGIT) 
-      {
-        addChar();
-        getChar();
-      }
-      nextToken = INT_LIT;
-      strcpy(tokenClass, "INT_LIT");
-      break;
-    
     case LETTER:
       keyTerms();
       break;
 
+    case DIGIT:
+      addChar();
+      getChar();
+      while (charClass == DIGIT)
+      {
+        addChar();
+        getChar();
+      }
+      nextToken = IDENT;
+      strcpy(tokenClass, "INT_LIT");
+      break;
+
     case UNKNOWN:
       lookup(nextChar);
+      getChar();
       break;
 
     case EOF:
@@ -287,9 +286,9 @@ int lex()
       break;
   }
 
-  if (strncmp(lexeme,"EOF",3)!= -1)
+  if(strncmp(lexeme,"EOF",3)!=0)
   {
-    printf("%s %s\n", lexeme, tokenClass);
+    printf("%s\t%s\n", lexeme, tokenClass);
   }
 
   return nextToken;
@@ -414,10 +413,37 @@ void character()
 {
   expr();
 
-  while (nextToken == LESSER_OP || nextToken == GREATER_OP|| nextToken == EQUAL_OP|| nextToken == NEQUAL_OP|| nextToken == LEQUAL_OP|| nextToken == GEQUAL_OP) 
+  while (1) 
   {
-    lex();
-    expr();
+      switch (nextToken) 
+      {
+          case LESSER_OP:
+            lex();
+            expr();
+            break;
+          case GREATER_OP:
+            lex();
+            expr();
+            break;
+          case EQUAL_OP:
+            lex();
+            expr();
+            break;
+          case NEQUAL_OP:
+            lex();
+            expr();
+             break;
+          case LEQUAL_OP:
+            lex();
+            expr();
+            break;
+          case GEQUAL_OP:
+            lex();
+            expr();
+            break;
+          default:
+        return;
+      }
   }
 }
 
@@ -454,30 +480,32 @@ void term()
 /* Function for F ::= (E) | O | N | V */
 void factor()
 {
-  if (nextToken == IDENT || nextToken == INT_LIT) {
-    lex(); /* Get the next token */
-  } else {
-    /* If the RHS is (<expr>), call lex to pass over the 
-    left parenthesis, call expr, and check for the right 
-    parenthesis */
+  //(E)
+  if (nextToken == LEFT_PAREN || nextToken == RIGHT_PAREN) 
+  {
     if (nextToken == LEFT_PAREN) 
     {
-        lex(); 
-        expr();
-        if (nextToken == RIGHT_PAREN) 
-        {
-            lex(); 
-        } 
-        else 
-        {
-        }
-    } /* End of if (nextToken == ... */
-    /* It was not an id, an integer literal, or a left parenthesis */
-  } /* End of else */
+      lex();
+    }
+    else if(nextToken == IDENT)
+    {
+      lex();
+    }
+    else if (RIGHT_PAREN)
+    {
+      lex();
+    }
+  } 
+  //O, N, V
+  else if (nextToken == INC_OP || nextToken == DEC_OP || nextToken == INT_LIT || nextToken == IDENT)
+  {
+    parse();
+  } 
 }
 
 /*****************************************************/
-/* This is for the grammars: O ::= V++ | V--
+/* This function will parse the terms
+This is for the grammars: O ::= V++ | V--
 V ::= a | b | … | y | z | aV | bV | … | yV | zV
 N ::= 0 | 1 | … | 8 | 9 | 0N | 1N | … | 8N | 9N */
 void parse()
@@ -487,7 +515,7 @@ void parse()
 
 /******************************************************/
 /* main driver */
-int main(int argc, char *argv[]) 
+int main(int argc, char* argv[]) 
 {
   printf("DCooke Analyzer :: R11744065 \n");
   /* Open the input data file and process its contents */
@@ -507,3 +535,5 @@ int main(int argc, char *argv[])
   }
   return 0;
 }
+
+
