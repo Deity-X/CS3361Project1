@@ -7,6 +7,7 @@
 
 #define LETTER 0
 #define DIGIT 1
+#define NEWLINE 2
 #define UNKNOWN 99
 
 /* Token codes */
@@ -240,6 +241,8 @@ static void getChar()
         charClass = LETTER;
       else if (isdigit(nextChar))
         charClass = DIGIT;
+      else if (strcmp(&nextChar, "\n")==0)
+        charClass = NEWLINE;
       else charClass = UNKNOWN;
   } 
   else 
@@ -264,10 +267,9 @@ int lex()
   switch (charClass)
   {
     case LETTER:
-      while (charClass == LETTER)
       keyTerms();
       break;
-
+    
     case DIGIT:
       addChar();
       getChar();
@@ -280,6 +282,9 @@ int lex()
       strcpy(tokenClass, "INT_LIT");
       break;
 
+    case NEWLINE:
+      getChar();
+    
     case UNKNOWN:
       lookup(nextChar);
       getChar();
@@ -301,7 +306,6 @@ int lex()
 
   return nextToken;
 }
-
 /*****************************************************/
 /* Function for assigning read, write, while, do, IDENT */
 static void keyTerms()
@@ -310,49 +314,39 @@ static void keyTerms()
   addChar();
   i++;
   getChar();
-  while (charClass == LETTER || charClass == DIGIT) 
+  while (charClass == LETTER) 
   {
     addChar();
     getChar();
     i++;
   }
 
-  if (i > 0)  
+  if(strcmp(lexeme, "read") == 0)
+  { 
+    nextToken = KEY_READ;
+    strcpy(tokenClass, "KEY_READ");
+  }
+  else if(strcmp(lexeme, "write") == 0)
   {
-    nextToken = INT_LIT;
-    strcpy(tokenClass, "INT_LIT");
-  } 
-  else 
+    nextToken = KEY_WRITE;
+    strcpy(tokenClass, "KEY_WRITE");
+  }
+  else if(strcmp(lexeme, "while") == 0)
   {
-    // Check for keywords
-    if (strcmp(lexeme, "read") == 0) 
-    { 
-      nextToken = KEY_READ;
-      strcpy(tokenClass, "KEY_READ");
-    } 
-    else if (strcmp(lexeme, "write") == 0) 
-    {
-      nextToken = KEY_WRITE;
-      strcpy(tokenClass, "KEY_WRITE");
-    } 
-    else if (strcmp(lexeme, "while") == 0) 
-    {
-      nextToken = KEY_WHILE;
-      strcpy(tokenClass, "KEY_WHILE");
-    } 
-    else if (strcmp(lexeme, "do") == 0) 
-    { 
-      nextToken = KEY_DO;
-      strcpy(tokenClass, "KEY_DO");
-    } 
-    else 
-    {
-      nextToken = IDENT;
-      strcpy(tokenClass, "IDENT");
-    }
+    nextToken = KEY_WHILE;
+    strcpy(tokenClass, "KEY_WHILE");
+  }
+  else if(strcmp(lexeme, "do") == 0)
+  { 
+    nextToken = KEY_DO;
+    strcpy(tokenClass, "KEY_DO");
+  }
+  else
+  {
+    nextToken = IDENT;
+    strcpy(tokenClass, "IDENT");
   }
 }
-
 
 /*****************************************************/
 /*The following functions are a part of parser.c*/
@@ -368,7 +362,6 @@ void stmt()
       {
           lex();
           variable();
-
         if (nextToken == RIGHT_PAREN)
         {
           lex();
@@ -536,7 +529,7 @@ int main(int argc, char* argv[])
 {
   printf("DCooke Analyzer :: R11744065 \n");
   /* Open the input data file and process its contents */
-  if ((in_fp = fopen("front.in", "r")) == NULL) 
+  if ((in_fp = fopen(argv[1], "r")) == NULL) 
   {
     printf("ERROR - cannot open front.in \n");
   } 
