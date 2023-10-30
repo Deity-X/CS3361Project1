@@ -7,7 +7,6 @@
 
 #define LETTER 0
 #define DIGIT 1
-#define NEWLINE 2
 #define UNKNOWN 99
 
 /* Token codes */
@@ -241,8 +240,6 @@ static void getChar()
         charClass = LETTER;
       else if (isdigit(nextChar))
         charClass = DIGIT;
-      else if (strcmp(&nextChar, "\n")==0)
-        charClass = NEWLINE;
       else charClass = UNKNOWN;
   } 
   else 
@@ -273,17 +270,15 @@ int lex()
     case DIGIT:
       addChar();
       getChar();
+      nextToken = IDENT;
+      strcpy(tokenClass, "INT_LIT");
       while (charClass == DIGIT)
       {
         addChar();
         getChar();
+        break;
       }
-      nextToken = IDENT;
-      strcpy(tokenClass, "INT_LIT");
       break;
-
-    case NEWLINE:
-      getChar();
     
     case UNKNOWN:
       lookup(nextChar);
@@ -299,7 +294,7 @@ int lex()
       break;
   }
 
-  if(strcmp(lexeme,"EOF")!=-1)
+  if(strcmp(lexeme,"EOF")!=0)
   {
     printf("%s\t%s\n", lexeme, tokenClass);
   }
@@ -529,7 +524,7 @@ int main(int argc, char* argv[])
 {
   printf("DCooke Analyzer :: R11744065 \n");
   /* Open the input data file and process its contents */
-  if ((in_fp = fopen(argv[1], "r")) == NULL) 
+  if ((in_fp = fopen("front.in", "r")) == NULL) 
   {
     printf("ERROR - cannot open front.in \n");
   } 
